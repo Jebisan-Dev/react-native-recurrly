@@ -56,6 +56,14 @@ const TabLayout = () => {
           }}
         />
       ))}
+
+      <Tabs.Screen
+        name="subscriptions/[id]"
+        options={{
+          href: null, // Hides the tab button from the tab bar
+          tabBarStyle: { display: "none" }, // Hides the bottom bar when viewing this screen
+        }}
+      />
     </Tabs>
   );
 };
