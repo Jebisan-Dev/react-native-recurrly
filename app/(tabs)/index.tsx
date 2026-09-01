@@ -19,7 +19,7 @@ import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 const SafeAreaView = styled(RNSafeAreaView);
 
 export default function App() {
-  const [expandedSubscritpionId, setExpandedSubscriptionId] = useState<
+  const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<
     string | null
   >(null);
   return (
@@ -76,7 +76,7 @@ export default function App() {
         renderItem={({ item }) => (
           <SubscriptionCard
             {...item}
-            expanded={expandedSubscritpionId === item.id}
+            expanded={expandedSubscriptionId === item.id}
             onPress={() =>
               setExpandedSubscriptionId((currentId) =>
                 currentId === item.id ? null : item.id,
@@ -84,7 +84,7 @@ export default function App() {
             }
           />
         )}
-        extraData={expandedSubscritpionId}
+        extraData={expandedSubscriptionId}
         ItemSeparatorComponent={() => <View className="h-4" />}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
