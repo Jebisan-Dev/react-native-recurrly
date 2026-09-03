@@ -4,13 +4,12 @@ import UpcomingSubscriptionCard from "@/components/UpcomingSubscriptionCard";
 import {
   HOME_BALANCE,
   HOME_SUBSCRIPTIONS,
-  HOME_USER,
-  UPCOMING_SUBSCRIPTIONS,
+  UPCOMING_SUBSCRIPTIONS
 } from "@/constants/data";
-import { icons } from "@/constants/icons";
 import images from "@/constants/images";
 import "@/global.css";
 import { formatCurrency } from "@/lib/utils";
+import { useUser } from "@clerk/expo";
 import dayjs from "dayjs";
 import { styled } from "nativewind";
 import { useState } from "react";
@@ -18,10 +17,19 @@ import { FlatList, Image, Text, View } from "react-native";
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 const SafeAreaView = styled(RNSafeAreaView);
 
-export default function App() {
-  const [expandedSubscritpionId, setExpandedSubscriptionId] = useState<
+const HomeScreen = () => {
+  const { user } = useUser();
+
+  const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<
     string | null
   >(null);
+
+  // Get user display name: firstName, fullName, or email
+  const displayName =
+    user?.firstName ||
+    user?.fullName ||
+    user?.emailAddresses[0]?.emailAddress ||
+    "User";
   return (
     <SafeAreaView className="flex-1 bg-background p-5">
       <FlatList
@@ -29,10 +37,13 @@ export default function App() {
           <>
             <View className="home-header">
               <View className="home-user">
-                <Image source={images.avatar} className="home-avatar" />
-                <Text className="home-user-name">{HOME_USER.name}</Text>
-
-                <Image source={icons.add} className="home-add-icon" />
+                <Image
+                  source={
+                    user?.imageUrl ? { uri: user.imageUrl } : images.avatar
+                  }
+                  className="home-avatar"
+                />
+                <Text className="home-user-name">{displayName}</Text>
               </View>
             </View>
 
@@ -68,7 +79,7 @@ export default function App() {
               />
             </View>
 
-            <ListHeading title="All Subscription" />
+            <ListHeading title="All Subscriptions" />
           </>
         )}
         data={HOME_SUBSCRIPTIONS}
@@ -76,7 +87,7 @@ export default function App() {
         renderItem={({ item }) => (
           <SubscriptionCard
             {...item}
-            expanded={expandedSubscritpionId === item.id}
+            expanded={expandedSubscriptionId === item.id}
             onPress={() =>
               setExpandedSubscriptionId((currentId) =>
                 currentId === item.id ? null : item.id,
@@ -84,7 +95,7 @@ export default function App() {
             }
           />
         )}
-        extraData={expandedSubscritpionId}
+        extraData={expandedSubscriptionId}
         ItemSeparatorComponent={() => <View className="h-4" />}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
@@ -94,4 +105,6 @@ export default function App() {
       />
     </SafeAreaView>
   );
-}
+};
+
+export default HomeScreen;

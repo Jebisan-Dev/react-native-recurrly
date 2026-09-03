@@ -298,6 +298,26 @@
     @apply border-destructive;
   }
 
+  .auth-password-row {
+    @apply flex-row items-center rounded-2xl border border-border bg-background;
+  }
+
+  .auth-password-row-error {
+    @apply border-destructive;
+  }
+
+  .auth-password-input {
+    @apply flex-1 border-0 bg-transparent;
+  }
+
+  .auth-password-toggle {
+    @apply mr-3 rounded-full px-2 py-1;
+  }
+
+  .auth-password-toggle-text {
+    @apply text-xs font-sans-bold text-accent;
+  }
+
   .auth-error {
     @apply text-xs font-sans-medium text-destructive;
   }
