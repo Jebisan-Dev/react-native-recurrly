@@ -1,6 +1,7 @@
 import { useAuth, useSignUp } from "@clerk/expo";
 import { Link, useRouter, type Href } from "expo-router";
 import { styled } from "nativewind";
+import { usePostHog } from "posthog-react-native";
 import { useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -18,6 +19,7 @@ const SafeAreaView = styled(RNSafeAreaView);
 const SignUp = () => {
   const { signUp, errors, fetchStatus } = useSignUp();
   const { isSignedIn } = useAuth();
+  const posthog = usePostHog();
   const router = useRouter();
 
   const [emailAddress, setEmailAddress] = useState("");
@@ -82,6 +84,7 @@ const SignUp = () => {
           }
         },
       });
+      posthog?.capture("user_signed_up");
     } else {
       console.error("Sign-up attempt not complete:", signUp);
     }

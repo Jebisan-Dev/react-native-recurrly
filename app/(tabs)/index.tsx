@@ -12,6 +12,7 @@ import { formatCurrency } from "@/lib/utils";
 import { useUser } from "@clerk/expo";
 import dayjs from "dayjs";
 import { styled } from "nativewind";
+import { usePostHog } from "posthog-react-native";
 import { useState } from "react";
 import { FlatList, Image, Text, View } from "react-native";
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
@@ -19,6 +20,7 @@ const SafeAreaView = styled(RNSafeAreaView);
 
 const HomeScreen = () => {
   const { user } = useUser();
+  const posthog = usePostHog();
 
   const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<
     string | null
@@ -88,11 +90,15 @@ const HomeScreen = () => {
           <SubscriptionCard
             {...item}
             expanded={expandedSubscriptionId === item.id}
-            onPress={() =>
-              setExpandedSubscriptionId((currentId) =>
-                currentId === item.id ? null : item.id,
-              )
-            }
+            onPress={() => {
+              const isExpanded = expandedSubscriptionId !== item.id;
+              posthog?.capture("subscription_card_toggled", {
+                is_expanded: isExpanded,
+                subscription_id: item.id,
+                subscription_status: item.status ?? null,
+              });
+              setExpandedSubscriptionId(isExpanded ? item.id : null);
+            }}
           />
         )}
         extraData={expandedSubscriptionId}

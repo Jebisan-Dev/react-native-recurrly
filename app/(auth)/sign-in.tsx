@@ -1,6 +1,7 @@
 import { useSignIn } from "@clerk/expo";
 import { Link, useRouter, type Href } from "expo-router";
 import { styled } from "nativewind";
+import { usePostHog } from "posthog-react-native";
 import { useState } from "react";
 import {
     KeyboardAvoidingView,
@@ -17,6 +18,7 @@ const SafeAreaView = styled(RNSafeAreaView);
 
 const SignIn = () => {
   const { signIn, errors, fetchStatus } = useSignIn();
+  const posthog = usePostHog();
   const router = useRouter();
 
   const [emailAddress, setEmailAddress] = useState("");
@@ -70,6 +72,7 @@ const SignIn = () => {
           }
         },
       });
+      posthog?.capture("user_signed_in");
     } else if (signIn.status === "needs_second_factor") {
       // Handle MFA if needed (not implemented in this basic flow)
       console.log("MFA required");
@@ -112,6 +115,7 @@ const SignIn = () => {
           }
         },
       });
+      posthog?.capture("user_signed_in");
     } else {
       console.error("Sign-in attempt not complete:", signIn);
     }
